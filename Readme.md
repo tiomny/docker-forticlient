@@ -6,52 +6,28 @@ Connect to a FortiNet VPNs through docker
 
 The container uses the forticlientsslvpn_cli linux binary to manage ppp interface
 
-All of the container traffic is routed through the VPN, so you can in turn route host traffic through the container to access remote subnets.
+This allows the user to RDP to the docker host with the specified port, which will then be forwarded to the docker container running the vpn, and finally redirected to the remote machine you wish to connect to (set by VPNRDPIP).
+
+If running the docker container from the machine you wish to connect from you can omit the -p settings, and connect to the ip address of the container on port 3380.
+
+### Windows
+
+This should work with docker on windows, however with Windows 10 I see an issue with opening the vpn tunnel.
 
 ### Linux
 
 ```bash
-# Create a docker network, to be able to control addresses
-docker network create --subnet=172.20.0.0/16 fortinet
 
 # Start the priviledged docker container with a static ip
 docker run -it --rm \
   --privileged \
-  --net fortinet --ip 172.20.0.2 \
+  -p 1234:3380 \
   -e VPNADDR=host:port \
   -e VPNUSER=me@domain \
   -e VPNPASS=secret \
-  auchandirect/forticlient
+  -e VPNRDPIP=ipofRDPmachine
+  cadab/docker-forticlient
 
-# Add route for you remote subnet (ex. 10.201.0.0/16)
-ip route add 10.201.0.0/16 via 172.20.0.2
-
-# Access remote host from the subnet
-ssh 10.201.8.1
-```
-
-### OSX
-
-Docker Beta's kernel lasks ppp interface support, so you'll need to use a docker-machine VM
-
-```bash
-# Create a docker-machine and configure shell to use it
-docker-machine create fortinet --driver virtualbox
-eval $(docker-machine env fortinet)
-
-# Start the priviledged docker container on its host network
-docker run -it --rm \
-  --privileged --net host \
-  -e VPNADDR=host:port \
-  -e VPNUSER=me@domain \
-  -e VPNPASS=secret \
-  auchandirect/forticlient
-
-# Add route for you remote subnet (ex. 10.201.0.0/16)
-sudo route add -net 10.201.0.0/16 $(docker-machine ip fortinet)
-
-# Access remote host from the subnet
-ssh 10.201.8.1
 ```
 
 ## Misc
