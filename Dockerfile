@@ -15,7 +15,12 @@ RUN /usr/share/forticlient/opt/forticlient-sslvpn/64bit/helper/setup.linux.sh 2
 
 # Copy runfiles
 COPY forticlient /usr/bin/forticlient
+RUN chmod u+x /usr/bin/forticlient
+
 COPY start.sh /start.sh
+RUN chmod u+x /start.sh
+
 COPY gateway-fix.sh /gateway-fix.sh
+RUN chmod u+x /gateway-fix.sh
 
 CMD [ "/start.sh" ]
