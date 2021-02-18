@@ -23,5 +23,5 @@ do
   echo "------------ VPN Starts ------------"
   /usr/bin/forticlient
   echo "------------ VPN exited ------------"
-  sleep $env(RETRYDELAY)
+  sleep $RETRYDELAY
 done
