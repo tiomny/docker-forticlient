@@ -18,7 +18,8 @@ done
 
 /gateway-fix.sh &
 
-for i in {1..$RETRYCOUNT} do
+for ((i=0; i<$RETRYCOUNT; i++))
+do
   echo "------------ VPN Starts ------------"
   /usr/bin/forticlient
   echo "------------ VPN exited ------------"
