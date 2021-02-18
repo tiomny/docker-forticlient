@@ -40,5 +40,8 @@ docker run \
   -e "VPNUSER=[user-id]" \
   -e "VPNPASS=[pwd]" \
   -e "VPNRDPIP=192.168.1.123" \
-  jakubv/docker-forticlient
+  -e "VPNTIMEOUT=30" \ #Optional - timeout for Forticlient
+  -e "RETRYDELAY=10" \ #Optional - delay between connection attempts
+  -e "RETRYCOUNT=3" \ #Optional - maximum connection attempts
+  tiomny/docker-forticlient
 ```
