@@ -5,6 +5,8 @@ if [ -z "$VPNADDR" -o -z "$VPNUSER" -o -z "$VPNPASS" -o -z "$VPNRDPIP" ]; then
 fi
 
 export VPNTIMEOUT=${VPNTIMEOUT:-5}
+export RETRYDELAY=${RETRYDELAY:-10}
+export RETRYCOUNT=${RETRYCOUNT:-3}
 
 iptables -t nat -A PREROUTING -p tcp --dport 3380 -j DNAT --to-destination  ${VPNRDPIP}:3389
 iptables -t nat -A POSTROUTING -j MASQUERADE
@@ -16,9 +18,9 @@ done
 
 /gateway-fix.sh &
 
-while [ true ]; do
+for i in {1..$RETRYCOUNT} do
   echo "------------ VPN Starts ------------"
   /usr/bin/forticlient
   echo "------------ VPN exited ------------"
-  sleep 10
+  sleep $env(RETRYDELAY)
 done
